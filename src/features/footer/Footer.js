@@ -1,8 +1,9 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { availableColors, capitalize } from '../filters/colors'
-import { StatusFilters } from '../filters/filtersSlice'
+import { StatusFilters, colorFilterChanged } from '../filters/filtersSlice'
+
 
 const RemainingTodos = ({ count }) => {
   const suffix = count === 1 ? '' : 's'
@@ -75,6 +76,8 @@ const ColorFilters = ({ value: colors, onChange }) => {
 
 const Footer = () => {
 
+  const dispatch = useDispatch()
+
   const todosRemaining = useSelector(state => {
     const uncompletedTodos = state.todos.filter(todo => !todo.completed)
     return uncompletedTodos.length
@@ -82,8 +85,7 @@ const Footer = () => {
 
   const { status, colors } = useSelector(state => state.filters)
 
-  const onColorChange = (color, changeType) =>
-    console.log('Color change: ', { color, changeType })
+  const onColorChange = (color, changeType) =>  dispatch(colorFilterChanged(color, changeType))
   const onStatusChange = (status) => console.log('Status change: ', status)
 
   return (
