@@ -1,3 +1,5 @@
+import { client } from '../../api/client'
+
 const initialState = []
 
 function nextTodoId(todos) {
@@ -5,17 +7,29 @@ function nextTodoId(todos) {
   return maxId + 1
 }
 
+// Write a synchronous outer function that receives the `text` parameter:
+export function saveNewTodo(text) {
+  // And then creates and returns the async thunk function:
+  return async function saveNewTodoThunk(dispatch, getState) {
+    // ✅ Now we can use the text value and send it to the server
+    const initialTodo = { text }
+    const response = await client.post('/fakeApi/todos', { todo: initialTodo })   
+    dispatch({ type: 'todos/todoAdded', payload: response.todo})
+  }
+}
+
+// Thunk function
+export async function fetchTodos(dispatch, getState) {
+  const response = await client.get('/fakeApi/todos')
+  dispatch({ type: 'todos/todosLoaded', payload: response.todos})
+}
+
 export default function todosReducer(state = initialState, action) {
   switch (action.type) {
     case 'todos/todoAdded': {
       // Can return just the new todos array - no extra object around it
       return [
-        ...state,
-        {
-          id: nextTodoId(state),
-          text: action.payload,
-          completed: false,
-        },
+        ...state, action.payload,
       ]
     }
     case 'todos/todoToggled': {
@@ -42,6 +56,10 @@ export default function todosReducer(state = initialState, action) {
           color,
         }
       })
+    }
+    case 'todos/todosLoaded': {
+      // Replace the existing state entirely by returning the new value
+      return action.payload
     }
     case 'todos/todoDeleted': {
       return state.filter((todo) => todo.id !== action.payload)
