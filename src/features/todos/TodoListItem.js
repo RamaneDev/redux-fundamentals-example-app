@@ -4,8 +4,9 @@ import { ReactComponent as TimesSolid } from './times-solid.svg'
 
 import { availableColors, capitalize } from '../filters/colors'
 import { useDispatch, useSelector } from 'react-redux'
+import { colorChanged } from './todosSlice'
 
-const selectToDoById = (state, id) => state.todos.find(todo => todo.id === id)
+const selectToDoById = (state, id) => state.todos.entities.find(todo => todo.id === id)
 
 
 const TodoListItem = ({ id }) => {
@@ -28,6 +29,11 @@ const TodoListItem = ({ id }) => {
     </option>
   ))
 
+  const handleColorChanged = (e) => {
+    dispatch(colorChanged(e.target.value, id))
+  }
+
+
   return (
     <li>
       <div className="view">
@@ -44,7 +50,8 @@ const TodoListItem = ({ id }) => {
           <select
             className="colorPicker"
             value={color}
-            style={{ color }}            
+            style={{ color }}
+            onChange={handleColorChanged}            
           >
             <option value=""></option>
             {colorOptions}

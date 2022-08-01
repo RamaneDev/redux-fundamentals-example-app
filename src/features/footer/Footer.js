@@ -79,14 +79,15 @@ const Footer = () => {
   const dispatch = useDispatch()
 
   const todosRemaining = useSelector(state => {
-    const uncompletedTodos = state.todos.filter(todo => !todo.completed)
+    const uncompletedTodos = state.todos.entities.filter(todo => !todo.completed)
     return uncompletedTodos.length
   })
 
   const { status, colors } = useSelector(state => state.filters)
 
   const onColorChange = (color, changeType) =>  dispatch(colorFilterChanged(color, changeType))
-  const onStatusChange = (status) => console.log('Status change: ', status)
+  const onStatusChange = status =>
+  dispatch({ type: 'filters/statusFilterChanged', payload: status })
 
   return (
     <footer className="footer">
