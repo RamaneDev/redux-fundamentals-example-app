@@ -4,7 +4,7 @@ import { ReactComponent as TimesSolid } from './times-solid.svg'
 
 import { availableColors, capitalize } from '../filters/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { colorChanged } from './todosSlice'
+import { colorChanged, todoColorSelected } from './todosSlice'
 
 const selectToDoById = (state, id) => state.todos.entities.find(todo => todo.id === id)
 
@@ -30,7 +30,7 @@ const TodoListItem = ({ id }) => {
   ))
 
   const handleColorChanged = (e) => {
-    dispatch(colorChanged(e.target.value, id))
+    dispatch(todoColorSelected(id, e.target.value))
   }
 
 
