@@ -4,22 +4,20 @@ import { ReactComponent as TimesSolid } from './times-solid.svg'
 
 import { availableColors, capitalize } from '../filters/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { colorChanged, todoColorSelected } from './todosSlice'
-
-const selectToDoById = (state, id) => state.todos.entities.find(todo => todo.id === id)
+import { colorChanged, selectTodoById, todoColorSelected, todoDeleted, todoToggled } from './todosSlice'
 
 
 const TodoListItem = ({ id }) => {
   
   
-  const todo = useSelector(state => selectToDoById(state, id))
+  const todo = useSelector(state => selectTodoById(state, id))
 
   const { text, completed, color } = todo
 
   const dispatch = useDispatch()
 
   const handleCompletedChanged = () => {
-    dispatch({ type: 'todos/todoToggled', payload: todo.id })
+    dispatch(todoToggled(id))
   }
 
 
@@ -32,6 +30,8 @@ const TodoListItem = ({ id }) => {
   const handleColorChanged = (e) => {
     dispatch(todoColorSelected(id, e.target.value))
   }
+
+  const handelRemove =  () => dispatch(todoDeleted(id))
 
 
   return (
@@ -56,7 +56,7 @@ const TodoListItem = ({ id }) => {
             <option value=""></option>
             {colorOptions}
           </select>
-          <button className="destroy">
+          <button className="destroy" onClick={handelRemove}>
             <TimesSolid />
           </button>
         </div>

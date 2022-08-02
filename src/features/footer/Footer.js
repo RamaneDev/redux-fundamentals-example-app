@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { availableColors, capitalize } from '../filters/colors'
 import { StatusFilters, colorFilterChanged } from '../filters/filtersSlice'
+import { allTodosCompleted, completedTodosCleared, uncompletedTodos } from '../todos/todosSlice'
 
 
 const RemainingTodos = ({ count }) => {
@@ -78,10 +79,7 @@ const Footer = () => {
 
   const dispatch = useDispatch()
 
-  const todosRemaining = useSelector(state => {
-    const uncompletedTodos = state.todos.entities.filter(todo => !todo.completed)
-    return uncompletedTodos.length
-  })
+  const todosRemaining = useSelector(uncompletedTodos).length
 
   const { status, colors } = useSelector(state => state.filters)
 
@@ -89,12 +87,16 @@ const Footer = () => {
   const onStatusChange = status =>
   dispatch({ type: 'filters/statusFilterChanged', payload: status })
 
+  const HandelallTodosCompleted = () => dispatch(allTodosCompleted())
+
+  const handelClearAllTodosCompleted = () => dispatch(completedTodosCleared())
+
   return (
     <footer className="footer">
       <div className="actions">
         <h5>Actions</h5>
-        <button className="button">Mark All Completed</button>
-        <button className="button">Clear Completed</button>
+        <button className="button" onClick={HandelallTodosCompleted}>Mark All Completed</button>
+        <button className="button" onClick={handelClearAllTodosCompleted}>Clear Completed</button>
       </div>
 
       <RemainingTodos count={todosRemaining} />
